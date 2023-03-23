@@ -22,7 +22,7 @@ data:
   CKAN_MAX_UPLOAD_SIZE_MB: "100"
   CKAN_REDIS_URL: redis://redis:6379/0
   CKAN_SITE_ID: default
-  CKAN_SITE_URL: https://catalog-dga.data.go.th
+  CKAN_SITE_URL: https://catalog-aws.dg-paas.cloud
   CKAN_SMTP_STARTTLS: "True"
   CKAN_SOLR_URL: http://solr:8983/solr/ckan
   CKAN_SQLALCHEMY_URL: postgresql://ckan:ckan@postgres/ckan

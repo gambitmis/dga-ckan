@@ -68,7 +68,7 @@ spec:
       volumes:
       - name: ckandata
         persistentVolumeClaim:
-          claimName: dgpaas-ckan
+          claimName: ckan-pvc
 status: {}
 ---
 apiVersion: v1

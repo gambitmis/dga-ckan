@@ -68,7 +68,7 @@ spec:
       - name: pgdata
         #emptyDir: {}
         persistentVolumeClaim:
-          claimName: dgpaas-postgres
+          claimName: postgres-pvc
 status: {}
 ---
 apiVersion: v1
