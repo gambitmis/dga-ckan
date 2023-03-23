@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ckan
+  name: ckan
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ckan
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ckan
+    spec:
+      initContainers:
+      - image: gambitmis/init-sidecar:v1
+        name: check-postgres
+        env:
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: ckan-secret
+              key: POSTGRES_USER
+        command: ['sh','-c',"until pg_isready -h $(POSTGRES_HOST).$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local -U $(POSTGRES_USER) -d ckan; do echo waiting for myservice; sleep 2; done"]
+      - image: gambitmis/init-sidecar:v1
+        name: check-redis
+        command: ['sh','-c',"until redis-cli -h redis PING; do echo waiting for myservice; sleep 2; done"]
+      - image: gambitmis/init-sidecar:v1
+        name: check-solr
+        command: ['sh','-c',"until curl http://solr:8983/solr/ > /dev/null 2>&1; do echo waiting for myservice; sleep 2; done"]
+      containers:
+      - image: IMG_CKAN:v1
+        name: ckan-thai-gdc-f2g6p
+        ports:
+        - containerPort: 5000
+        resources: {}
+        volumeMounts:
+         - name: ckandata
+           mountPath: /var/lib/ckan
+           subPath: ckan_data
+        envFrom:
+        - configMapRef:
+             name: ckan-configmap
+        - secretRef:
+             name: ckan-secret
+        env:
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: CKAN_SQLALCHEMY_URL
+          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/ckan
+        - name: CKAN_DATASTORE_WRITE_URL
+          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/datastore
+        - name: CKAN_DATASTORE_READ_URL
+          value: postgresql://$(DATASTORE_READONLY_USER):$(DATASTORE_READONLY_PASSWORD)@$(POSTGRES_HOST)/datastore
+        livenessProbe:
+           tcpSocket:
+              port: 5000
+        readinessProbe:
+           tcpSocket:
+              port: 5000
+      volumes:
+      - name: ckandata
+        persistentVolumeClaim:
+          claimName: dgpaas-ckan
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ckan
+  name: ckan
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: ckan
+  type: NodePort
+status:
+  loadBalancer: {}
