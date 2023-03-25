@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ckan-redis
+  name: ckan-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ckan-redis
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ckan-redis
+    spec:
+      containers:
+      - image: IMG_REDIS:v1
+        name: redis
+        ports:
+        - containerPort: 6379
+        resources: {}
+        livenessProbe:
+            exec:
+              command:
+              - redis-cli
+              - ping
+        readinessProbe:
+            tcpSocket:
+              port: 6379
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: ckan-redis-svc
+  name: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: ckan-redis
+status:
+  loadBalancer: {}
