@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: ckan-pv
+  name: dga-ckan-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 250Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
@@ -17,10 +17,10 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-pv
+  name: dga-postgres-pv
 spec:
   capacity:
-    storage: 5Gi
+    storage: 250Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
@@ -40,8 +40,8 @@ spec:
   storageClassName: efs-sc
   resources:
     requests:
-      storage: 5Gi
-  volumeName: ckan-pv
+      storage: 250Gi
+  volumeName: dga-ckan-pv
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -53,5 +53,5 @@ spec:
   storageClassName: efs-sc
   resources:
     requests:
-      storage: 5Gi
-  volumeName: postgres-pv
+      storage: 250Gi
+  volumeName: dga-postgres-pv

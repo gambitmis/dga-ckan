@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: ckan-pv
+  name: demo-ckan-pv
 spec:
   capacity:
     storage: 5Gi
@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: postgres-pv
+  name: demo-postgres-pv
 spec:
   capacity:
     storage: 5Gi
@@ -41,7 +41,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeName: ckan-pv
+  volumeName: demo-ckan-pv
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -54,4 +54,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeName: postgres-pv
+  volumeName: demo-postgres-pv
