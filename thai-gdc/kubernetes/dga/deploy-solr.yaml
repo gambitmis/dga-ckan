@@ -33,7 +33,7 @@ spec:
         runAsGroup: 65533
         fsGroup: 8983
       containers:
-      - image: IMG_SOLR:v1
+      - image: 759076157369.dkr.ecr.ap-southeast-1.amazonaws.com/ckan-solr:v1
         imagePullPolicy: IfNotPresent
         name: ckan-solr
         ports:

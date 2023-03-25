@@ -36,7 +36,7 @@ spec:
         name: check-solr
         command: ['sh','-c',"until curl http://solr:8983/solr/ > /dev/null 2>&1; do echo waiting for myservice; sleep 2; done"]
       containers:
-      - image: IMG_CKAN:v1
+      - image: 759076157369.dkr.ecr.ap-southeast-1.amazonaws.com/ckan-core:v1
         name: ckan-thai-gdc-f2g6p
         ports:
         - containerPort: 5000
