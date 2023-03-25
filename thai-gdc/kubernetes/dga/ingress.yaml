@@ -16,7 +16,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "catalog-aws.dg-paas.cloud"
+  - host: "catalog-dga.data.go.th"
     http:
       paths:
       - pathType: Prefix
