@@ -16,6 +16,12 @@ apps:
     tags: v1
     label_app: ckan-core
 
+configmap:
+  site_url: https://catalog-aws.dg-paas.cloud
+
+ingress:
+  host: catalog-aws.dg-paas.cloud
+
 storage:
   aws_efs:
     fs_id: fs-029dbf12313961215
