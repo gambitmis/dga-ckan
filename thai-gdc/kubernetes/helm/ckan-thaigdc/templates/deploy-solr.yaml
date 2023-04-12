@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.apps.solr.label_app }}
+  name: ckan-solr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.solr.label_app }}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{ .Values.apps.solr.label_app }}
+    spec:
+      securityContext:
+        runAsUser: 8983
+        runAsGroup: 65533
+        fsGroup: 8983
+      containers:
+      - image: {{ .Values.apps.solr.image }}:{{ .Values.apps.solr.tage }}
+        imagePullPolicy: IfNotPresent
+        name: ckan-solr
+        ports:
+        - containerPort: 8983
+        resources: {}
+        env:
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: ckan-configmap
+              key: TZ
+        readinessProbe:
+            tcpSocket:
+              port: 8983
+        livenessProbe:
+            tcpSocket:
+              port: 8983
+        volumeMounts:
+        - mountPath: /opt/solr/server/solr/ckan/data/index
+          name: solr-data
+      volumes:
+      - name: solr-data
+        emptyDir: {}
+        #persistentVolumeClaim:
+          #claimName: dgpaas-solr
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.apps.solr.label_app }}
+  name: solr
+spec:
+  ports:
+  - port: 8983
+    protocol: TCP
+    targetPort: 8983
+  selector:
+    app: {{ .Values.apps.solr.label_app }}
+status:
+  loadBalancer: {}

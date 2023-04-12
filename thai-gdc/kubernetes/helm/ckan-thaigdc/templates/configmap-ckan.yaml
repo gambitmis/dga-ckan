@@ -1,0 +1,36 @@
+apiVersion: v1
+data:
+  CKAN___SCHEMING__DATASET_SCHEMAS: ckanext.thai_gdc:ckan_dataset.json
+  CKAN__ACTIVITY_STREAMS_ENABLED: "True"
+  CKAN__AUTH__PUBLIC_USER_DETAILS: "False"
+  CKAN__AUTH__USER_DELETE_GROUPS: "False"
+  CKAN__AUTH__USER_DELETE_ORGANIZATIONS: "False"
+  CKAN__DATAPUSHER__ASSUME_TASK_STALE_AFTER: "60"
+  CKAN__DATAPUSHER__FORMATS: csv xls xlsx tsv application/csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  CKAN__HARVEST__MQ__HOSTNAME: redis
+  CKAN__HARVEST__MQ__PORT: "6379"
+  CKAN__HARVEST__MQ__REDIS_DB: "0"
+  CKAN__HARVEST__MQ__TYPE: redis
+  CKAN__LOCALE_DEFAULT: th
+  CKAN__LOCALE_ORDER: en th pt_BR ja it cs_CZ ca es fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv
+  CKAN__PLUGINS: envvars stats image_view text_view recline_view resource_proxy webpage_view datastore xloader noregistration thai_gdc scheming_datasets pdf_view hierarchy_display hierarchy_form dcat dcat_json_interface structured_data dga_stats
+  CKAN__STORAGE_PATH: /var/lib/ckan
+  CKAN__TRACKING_ENABLED: "True"
+  CKAN__VIEWS__DEFAULT_VIEWS: image_view text_view recline_view webpage_view pdf_view
+  CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:datastore@postgres/datastore
+  CKAN_DATASTORE_WRITE_URL: postgresql://ckan:ckan@postgres/datastore
+  CKAN_MAX_UPLOAD_SIZE_MB: "100"
+  CKAN_REDIS_URL: redis://redis:6379/0
+  CKAN_SITE_ID: default
+  CKAN_SITE_URL: https://catalog-aws.dg-paas.cloud
+  CKAN_SMTP_STARTTLS: "True"
+  CKAN_SOLR_URL: http://solr:8983/solr/ckan
+  CKAN_SQLALCHEMY_URL: postgresql://ckan:ckan@postgres/ckan
+  TEST_CKAN_DATASTORE_READ_URL: postgresql://datastore_ro:datastore@db/datastore_test
+  TEST_CKAN_DATASTORE_WRITE_URL: postgresql://ckan:ckan@db/datastore_test
+  TEST_CKAN_REDIS_URL: redis://redis:6379/0
+  TEST_CKAN_SOLR_URL: http://solr:8983/solr/ckan
+  TZ: Asia/Bangkok
+kind: ConfigMap
+metadata:
+  name: ckan-configmap

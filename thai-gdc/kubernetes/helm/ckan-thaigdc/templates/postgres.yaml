@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.apps.postgres.label_app }}
+  name: {{ .Release.Name }}-ckan-postgis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.postgres.label_app }}
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{ .Values.apps.postgres.label_app }}
+    spec:
+      containers:
+      - image: {{ .Values.apps.postgres.image }}:{{ .Values.apps.postgres.tags }}
+        imagePullPolicy: Always
+        name: ckan-postgis
+        env:
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: ckan-configmap
+              key: TZ
+        - name: PGDATA
+          value: /var/lib/postgresql/data/db
+        - name: POSTGRES_USER
+          valueFrom:
+             secretKeyRef:
+                name: ckan-secret
+                key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+             secretKeyRef:
+                name: ckan-secret
+                key: POSTGRES_PASSWORD
+        - name: DATASTORE_READONLY_USER
+          valueFrom:
+             secretKeyRef:
+                name: ckan-secret
+                key: DATASTORE_READONLY_USER 
+        - name: DATASTORE_READONLY_PASSWORD
+          valueFrom:
+             secretKeyRef:
+                name: ckan-secret
+                key: DATASTORE_READONLY_PASSWORD
+        livenessProbe:
+            exec:
+              command:
+              - pg_isready
+              - -U
+              - $(POSTGRES_USER)
+        readinessProbe:
+           initialDelaySeconds: 3
+           tcpSocket:
+              port: 5432              
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: pgdata
+      volumes:
+      - name: pgdata
+        #emptyDir: {}
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-postgres-pvc
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: {{ .Values.apps.postgres.label_app }}
+  name: postgres
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: {{ .Values.apps.postgres.label_app }}
+status:
+  loadBalancer: {}

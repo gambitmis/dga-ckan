@@ -1,0 +1,24 @@
+apps:
+  postgres:
+    image: 759076157369.dkr.ecr.ap-southeast-1.amazonaws.com/ckan-postgres
+    tags: v1
+    label_app: ckan-postgres
+  solr:
+    image: 759076157369.dkr.ecr.ap-southeast-1.amazonaws.com/ckan-solr
+    tage: v1
+    label_app: ckan-solr
+  redis:
+    image: 759076157369.dkr.ecr.ap-southeast-1.amazonaws.com/ckan-redis
+    tags: v1
+    label_app: ckan-redis
+  ckan:
+    image: 759076157369.dkr.ecr.ap-southeast-1.amazonaws.com/ckan-core
+    tags: v1
+    label_app: ckan-core
+
+storage:
+  aws_efs:
+    fs_id: fs-029dbf12313961215
+  apps:
+    pg_data: 20Gi
+    ckan_data: 20Gi
