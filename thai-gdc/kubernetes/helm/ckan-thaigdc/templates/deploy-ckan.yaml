@@ -68,7 +68,7 @@ spec:
       volumes:
       - name: ckandata
         persistentVolumeClaim:
-          claimName: ckan-pvc
+          claimName: {{ .Release.Name }}-ckan-pvc
 status: {}
 ---
 apiVersion: v1
