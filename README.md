@@ -77,3 +77,59 @@ https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html
 https://docs.aws.amazon.com/eks/latest/userguide/add-ons-images.html
 
 ```
+
+```
+kubectl -n yalacity exec deploy-postgres-xxxx -- /usr/bin/pg_dump -O -x --format=c -d ckan --file=/tmp/yalacity-ckan.dump -U ckan
+kubectl -n yalacity exec deploy-postgres-xxxx -- /usr/bin/pg_dump -O -x --format=c -d ckan --file=/tmp/yalacity-data.dump -U ckan
+```
+
+```
+#!/bin/bash
+  
+ns="yalacity"
+datetime=$(date +"%Y%m%d-%H")
+
+ckan=$(kubectl -n "$ns" get pod -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep ckan)
+pg=$(kubectl -n "$ns" get pod -o=jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' | grep postgres)
+
+echo "Ckan container name $ckan"
+echo "Postgres container name $pg"
+echo "Namespace $ns"
+echo "###################################"
+
+if kubectl -n "$ns" exec "$pg" -- /usr/bin/pg_dump -O -x --format=c -d ckan --file="/tmp/$ns-ckan-$datetime.dump" -U ckan; then
+    echo "Dump file CKAN created successfully."
+else
+    echo "Error creating dump file."
+fi
+
+if kubectl -n "$ns" exec "$pg" -- /usr/bin/pg_dump -O -x --format=c -d datastore --file="/tmp/$ns-datastore-$datetime.dump" -U ckan; then
+    echo "Dump file DATASTORE created successfully."
+else
+    echo "Error creating dump file."
+fi
+
+if kubectl -n "$ns" cp "$pg":/tmp/$ns-ckan-$datetime.dump /tmp/$ns-ckan-$datetime.dump; then
+    echo "Download CKAN dump to /tmp already."
+else
+    echo "Error can not download file."
+fi
+
+if kubectl -n "$ns" cp "$pg":/tmp/$ns-datastore-$datetime.dump /tmp/$ns-datastore-$datetime.dump; then
+    echo "Download DATASTORE dump to /tmp already."
+else
+    echo "Error can not download file."
+fi
+
+if kubectl -n "$ns" exec "$ckan" -c testimage -- tar -czvf /tmp/$ns-webckan-$datetime.tar.gz /var/lib/ckan; then
+    echo "Backup file Web-CKAN created successfully."
+else
+    echo "Error creating dump file."
+fi
+
+if kubectl -n "$ns" cp "$ckan":/tmp/$ns-webckan-$datetime.tar.gz /tmp/$ns-webckan-$datetime.tar.gz -c testimage; then
+    echo "Download backup Web-CKAN created successfully."
+else
+    echo "Error download backup file."
+fi
+```
